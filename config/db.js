@@ -1,16 +1,13 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const dbConnect = () => {
-    const db_url = process.env.MONGO_URI
-    mongoose.set('strictQuery', false)
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Conectado a la base de datos MongoDB 🚀");
+  } catch (error) {
+    console.error("Error al conectar a la base de datos:", error);
+    process.exit(1);  // Finaliza el proceso si la conexión falla
+  }
+};
 
-    try{
-        mongoose.connect(db_url)
-    }catch(error){
-        console.err("Error conectando a la BD:", error)
-    }
-
-    mongoose.connection.on("connected",() => console.log("Conectado a la BD"))
-}
-
-module.exports = dbConnect
+module.exports = connectDB;
