@@ -19,6 +19,19 @@ const UserSchema = new mongoose.Schema({
   verificationCode: { type: String },
   verificationAttempts: { type: Number, default: 3 },
   role: { type: String, default: "user" },
+  name: { type: String },  // Nombre del usuario
+  surnames: { type: String },  // Apellidos del usuario
+  nif: { type: String },  // NIF del usuario
+  isAutonomo: { type: Boolean, default: false },  // Campo para indicar si el usuario es autónomo
+  company: {
+    name: { type: String },  // Nombre de la compañía
+    cif: { type: String },   // CIF de la compañía
+    street: { type: String },  // Dirección de la compañía
+    number: { type: Number },  // Número de la dirección
+    postal: { type: Number },  // Código postal
+    city: { type: String },  // Ciudad
+    province: { type: String },  // Provincia
+  },
 });
 
 // Cifrar la contraseña antes de guardar
@@ -29,4 +42,3 @@ UserSchema.pre("save", async function (next) {
 });
 
 module.exports = mongoose.model("User", UserSchema);
-

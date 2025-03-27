@@ -11,9 +11,75 @@ Content-Type: application/json
 
 
 PUT http://localhost:3000/api/auth/user/validation
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTQyNmZjNzI0OWViNTc1ZGJlOTRkNSIsImVtYWlsIjoidGVlZHNhZHR1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQzMDA1NDM2LCJleHAiOjE3NDMwMDkwMzZ9.TpEeJIpXBE_vOpLeuR99O6r-zK-LHY3JLa1rnYGB4oQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDMwNjI2NjgsImV4cCI6MTc0MzA2NjI2OH0.zClQURa8lDhFEa50iCI5i6QtggPnxLZCBN9hpqCmuDs
 Content-Type: application/json
 
 {
-  "code": "123456"
+  "code": "284803"
 }
+
+
+###
+
+
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "tessstuser@example.com",
+  "password": "mypassword123"
+}
+
+
+###
+
+
+### Actualizar los datos personales
+PUT http://localhost:3000/api/auth/user/register
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDMwNjQ5MjEsImV4cCI6MTc0MzA2ODUyMX0.8V2wMms_KEX3qJqe6cBvjTOAgoT-4ptaDvSLxut5OgA
+Content-Type: application/json
+
+{
+  "name": "José",
+  "surnames": "García Pérez",
+  "nif": "40000000X"
+}
+
+
+###
+
+
+### Actualizar los datos de la compañía
+PATCH http://localhost:3000/api/auth/user/company
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDMwNjQ5MjEsImV4cCI6MTc0MzA2ODUyMX0.8V2wMms_KEX3qJqe6cBvjTOAgoT-4ptaDvSLxut5OgA
+Content-Type: application/json
+
+{
+  "company": {
+    "name": "Servitop, SL.",
+    "cif": "B00000000",
+    "street": "Carlos V",
+    "number": 22,
+    "postal": 28936,
+    "city": "Móstoles",
+    "province": "Madrid"
+  }
+}
+
+
+###
+
+PATCH http://localhost:3000/api/auth/user/autonomo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlM2RiYWZmNDQ0NWU2MTE1MjVlZCIsImVtYWlsIjoidGVzc3N0dXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0MzA2NjEyNCwiZXhwIjoxNzQzMDY5NzI0fQ.cAKzJaQfOuRlVCywgsWaSYTnzjTvhO0BECPmHN77_Cs
+Content-Type: application/json
+
+{
+  "isAutonomo": true 
+}
+
+
+
+
+
+
+

@@ -144,3 +144,116 @@ exports.login = async (req, res) => {
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
+// Función para actualizar los datos personales del usuario
+exports.updatePersonalData = async (req, res) => {
+  try {
+    const { name, surnames, nif } = req.body;
+
+    // Validar los datos recibidos
+    if (!name || !surnames || !nif) {
+      return res.status(422).json({ message: "Faltan datos requeridos (nombre, apellidos, NIF)" });
+    }
+
+    // Buscar al usuario por ID (proveniente del token)
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Actualizar los datos del usuario
+    user.name = name;
+    user.surnames = surnames;
+    user.nif = nif;
+
+    // Guardar los cambios
+    await user.save();
+
+    return res.status(200).json({
+      message: "Datos personales actualizados correctamente",
+      user: {
+        name: user.name,
+        surnames: user.surnames,
+        nif: user.nif,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+// Función para actualizar los datos de la compañía del usuario
+exports.updateCompanyData = async (req, res) => {
+  try {
+    const { company } = req.body;
+    
+    // Validar los datos de la compañía
+    if (!company || !company.name || !company.cif || !company.street || !company.number || !company.postal || !company.city || !company.province) {
+      return res.status(422).json({ message: "Faltan datos requeridos de la compañía" });
+    }
+
+    // Buscar al usuario por ID (proveniente del token)
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Si el usuario es autónomo, los datos de la compañía serán los mismos que los datos personales del usuario
+    if (user.isAutonomo) {
+      user.company = {
+        name: user.name,  // Nombre del usuario
+        cif: user.nif,    // NIF del usuario como CIF
+        street: user.street || company.street,  // Dirección (si no está en el cuerpo, usamos la del usuario)
+        number: user.number || company.number,  // Número (si no está en el cuerpo, usamos el del usuario)
+        postal: user.postal || company.postal,  // Código postal (si no está en el cuerpo, usamos el del usuario)
+        city: user.city || company.city,  // Ciudad (si no está en el cuerpo, usamos la del usuario)
+        province: user.province || company.province,  // Provincia (si no está en el cuerpo, usamos la del usuario)
+      };
+    } else {
+      // Si no es autónomo, actualizar los datos de la compañía proporcionados
+      user.company = company;
+    }
+
+    // Guardar los cambios
+    await user.save();
+
+    return res.status(200).json({
+      message: "Datos de la compañía actualizados correctamente",
+      company: user.company,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
+// Función para actualizar si el usuario es autónomo
+exports.updateAutonomo = async (req, res) => {
+  try {
+    const { isAutonomo } = req.body; // Recibir el valor de 'isAutonomo' desde el cuerpo de la solicitud
+
+    if (typeof isAutonomo !== 'boolean') {
+      return res.status(400).json({ message: "'isAutonomo' debe ser un valor booleano" });
+    }
+
+    // Buscar al usuario por ID (usando el ID del usuario que viene en el token)
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Actualizar el campo isAutonomo
+    user.isAutonomo = isAutonomo;
+
+    // Guardar los cambios en la base de datos
+    await user.save();
+
+    return res.status(200).json({ message: "Campo 'isAutonomo' actualizado correctamente", user });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
