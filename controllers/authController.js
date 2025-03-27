@@ -1,6 +1,6 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 
 // Función para generar el token JWT
 const generateToken = (user) => {
@@ -98,6 +98,46 @@ exports.validateEmail = async (req, res) => {
     return res.status(200).json({
       message: "Email verificado exitosamente",
       acknowledged: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+// Función de login de usuario
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Verificar si el email y la contraseña fueron proporcionados
+    if (!email || !password) {
+      return res.status(400).json({ message: "Campos requeridos" });
+    }
+
+    // Buscar al usuario por email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verificar la contraseña
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Credenciales incorrectas" });
+    }
+
+    // Si las credenciales son correctas, generar el token
+    const token = generateToken(user);
+
+    // Responder con el token y los datos del usuario
+    return res.status(200).json({
+      token,
+      user: {
+        email: user.email,
+        role: user.role,
+        _id: user._id,
+      },
     });
   } catch (error) {
     console.error(error);
