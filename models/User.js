@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
       message: "Email inválido",
     },
   },
-  password: { type: String, required: true },
+  password: { type: String, required: false },
   verified: { type: Boolean, default: false },
   verificationCode: { type: String },
   verificationAttempts: { type: Number, default: 3 },
@@ -22,6 +22,7 @@ const UserSchema = new mongoose.Schema({
   name: { type: String },  // Nombre del usuario
   surnames: { type: String },  // Apellidos del usuario
   nif: { type: String },  // NIF del usuario
+  logo: { type: String },  // URL del logo de la empresa o usuario (subido a la nube o almacenado localmente)
   isAutonomo: { type: Boolean, default: false },  // Campo para indicar si el usuario es autónomo
   company: {
     name: { type: String },  // Nombre de la compañía

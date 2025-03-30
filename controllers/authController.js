@@ -1,6 +1,9 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const uploadToPinata = require("../utils/uploadToPinata");  // Importamos la función para subir a Pinata
+const path = require("path");
+const fs = require("fs");
 
 // Función para generar el token JWT
 const generateToken = (user) => {
@@ -256,4 +259,173 @@ exports.updateAutonomo = async (req, res) => {
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
+exports.updateLogo = async (req, res) => {
+  try {
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: "No se ha proporcionado un logo" });
+    }
+
+    // Subir el logo a Pinata
+    const logoUrl = await uploadToPinata(file);
+
+    // Buscar al usuario por ID (usando el token JWT)
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Actualizar la URL del logo en el usuario
+    user.logo = logoUrl;
+    await user.save();
+
+    return res.status(200).json({
+      message: "Logo actualizado correctamente",
+      logoUrl: user.logo,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+exports.getUser = async (req, res) => {
+  try {
+    // Buscar al usuario por ID usando el ID proporcionado en el token
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    return res.status(200).json({
+      user: {
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        _id: user._id,
+        verified: user.verified,
+        isAutonomo: user.isAutonomo, // Asegúrate de tener el campo isAutonomo en el modelo
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
+// Función para eliminar el usuario (hard o soft delete)
+exports.deleteUser = async (req, res) => {
+  try {
+    const { soft } = req.query;  // Obtenemos el parámetro soft
+
+    // Buscar al usuario por ID (proveniente del token)
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Si es soft delete, actualizamos el campo 'deletedAt'
+    if (soft === 'false') {
+      user.deletedAt = Date.now();  // Marcamos el usuario como eliminado
+      await user.save();
+      return res.status(200).json({ message: "Usuario marcado como eliminado" });
+    }
+
+    // Si no es soft delete, procedemos con el hard delete
+    await User.deleteOne({ _id: req.user.id });
+
+    return res.status(200).json({ message: "Usuario eliminado permanentemente" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
+// Función para recuperar la contraseña
+exports.recoverPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Validar que el email se haya proporcionado
+    if (!email) {
+      return res.status(400).json({ message: "El correo es requerido" });
+    }
+
+    // Buscar al usuario por email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Generar un token de recuperación
+    const resetToken = generateToken(user); // Puede usar un token temporal
+
+    // Aquí puedes enviar un correo al usuario con el token de recuperación
+    // Este paso depende de la configuración del servicio de email
+
+    return res.status(200).json({ message: "Correo de recuperación enviado", resetToken });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
+// Función para invitar a un compañero a la compañía
+exports.inviteColleague = async (req, res) => {
+  try {
+    const { email } = req.body; // Correo electrónico del compañero a invitar
+
+    // Validar que el correo esté presente
+    if (!email) {
+      return res.status(422).json({ message: "El correo es requerido" });
+    }
+
+    // Buscar al usuario que hace la invitación (usando el token)
+    const inviter = await User.findById(req.user.id);
+    if (!inviter) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verificar que el usuario tenga permiso para invitar (puede ser solo un "admin" o "owner")
+    if (inviter.role !== "admin" && inviter.role !== "owner") {
+      return res.status(403).json({ message: "No tienes permiso para invitar a compañeros" });
+    }
+
+    // Verificar si el compañero ya está registrado
+    const invitedUser = await User.findOne({ email });
+    if (invitedUser) {
+      return res.status(409).json({ message: "El usuario ya está registrado" });
+    }
+
+    // Crear el nuevo usuario invitado con el rol "guest"
+    const newUser = new User({
+      email,
+      role: "guest", // Rol "guest" para el invitado
+      company: inviter.company, // Asignamos la misma compañía que el usuario que invita
+    });
+
+    await newUser.save();
+
+    // Responder con éxito
+    return res.status(201).json({
+      message: "Compañero invitado correctamente",
+      user: {
+        email: newUser.email,
+        role: newUser.role,
+        _id: newUser._id,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
 
