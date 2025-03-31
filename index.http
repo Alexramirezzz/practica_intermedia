@@ -81,17 +81,18 @@ Content-Type: application/json
 
 ###
 
-### Subir logo a IPFS
+### Subir logo a IPFS (PATCH)
 PATCH http://localhost:3000/api/auth/user/logo HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTkxZDFjYTFjNWU4ODc3ZmQyZjllNCIsImVtYWlsIjoiYWxleEBleGFtcGxlLmNvbSIsImlhdCI6MTc0MzMzMDU4OSwiZXhwIjoxNzQzMzM0MTg5fQ.4_dAB1wjUJ09570m5QeY3tpRY-7mlsOmHtZnU5weSCY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM0MzYzODMsImV4cCI6MTc0MzQzOTk4M30.myVMZCnOpTq41tAik_kfAlgeJD1V9klt7YVgAqljVgs
 Content-Type: multipart/form-data; boundary=boundary123
 
 --boundary123
-Content-Disposition: form-data; name="logo"; filename="fondo.jpg"
-Content-Type: image/jpg
+Content-Disposition: form-data; name="logo"; filename="LEGO_logo.svg.png"
+Content-Type: image/png
 
-< C:\Users\alexr\OneDrive - U-tad\Desktop\wb2\LEGO_logo.svg.png
+C:\Users\alexr\OneDrive - U-tad\Desktop\wb2\practica_intermedia\LEGO_logo.svg.png
 --boundary123--
+
 
 
 
@@ -99,7 +100,7 @@ Content-Type: image/jpg
 
  
 GET http://localhost:3000/api/auth/user HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlM2RiYWZmNDQ0NWU2MTE1MjVlZCIsImVtYWlsIjoidGVzc3N0dXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0MzMzMDcwOCwiZXhwIjoxNzQzMzM0MzA4fQ.epe02StzveDUBbB2Y-icBNCFZuPw61Ac9DYUpIbIY2k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM0MzYzODMsImV4cCI6MTc0MzQzOTk4M30.myVMZCnOpTq41tAik_kfAlgeJD1V9klt7YVgAqljVgs
 Content-Type: application/json
 
 
@@ -118,7 +119,7 @@ POST http://localhost:3000/api/auth/user/recover HTTP/1.1
 Content-Type: application/json
 
 {
-  "email":  "tessstuser@example.com"
+  "email":  "testuser@example.com"
 }
 
 
@@ -126,12 +127,11 @@ Content-Type: application/json
 
 ### Invitar a compañero (POST)
 POST http://localhost:3000/api/auth/user/invite HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDMzMzE2MDksImV4cCI6MTc0MzMzNTIwOX0.KbfNBzEVy7rv18Z7PXe3BzahvsBi-XnyeQN_HCKHSNE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM0MzI0MzgsImV4cCI6MTc0MzQzNjAzOH0.rGivfi52qWy6QBdYbDrpbqZGHppcQSwBvLQCb49mjdE
 Content-Type: application/json
 
 {
-  "email": "newuser@example.com",
-  "password": "123456"
+  "email": "neewuser@example.com"
 }
 
 

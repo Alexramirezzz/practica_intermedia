@@ -260,36 +260,7 @@ exports.updateAutonomo = async (req, res) => {
   }
 };
 
-exports.updateLogo = async (req, res) => {
-  try {
-    const file = req.file;
 
-    if (!file) {
-      return res.status(400).json({ message: "No se ha proporcionado un logo" });
-    }
-
-    // Subir el logo a Pinata
-    const logoUrl = await uploadToPinata(file);
-
-    // Buscar al usuario por ID (usando el token JWT)
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-
-    // Actualizar la URL del logo en el usuario
-    user.logo = logoUrl;
-    await user.save();
-
-    return res.status(200).json({
-      message: "Logo actualizado correctamente",
-      logoUrl: user.logo,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error interno del servidor" });
-  }
-};
 
 exports.getUser = async (req, res) => {
   try {

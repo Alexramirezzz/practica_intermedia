@@ -1,5 +1,6 @@
 const express = require("express");
-const { register, validateEmail, login, updatePersonalData, updateCompanyData,  updateAutonomo, updateLogo, getUser, deleteUser, recoverPassword, inviteColleague } = require("../controllers/authController");
+const { register, validateEmail, login, updatePersonalData, updateCompanyData,  updateAutonomo, getUser, deleteUser, recoverPassword, inviteColleague } = require("../controllers/authController");
+const { updateLogo } = require('../controllers/updatelogo');
 const authMiddleware = require("../middlewares/verificationToken");
 const validateEmailCode = require("../validators/validateEmail");
 const validateLogin = require("../validators/validateLogin"); 
@@ -26,7 +27,7 @@ router.patch("/user/company", authMiddleware, validateCompanyData, updateCompany
 router.patch("/user/autonomo", authMiddleware, updateAutonomo);
 
 // Ruta para actualizar el logo del usuario
-router.patch("/user/logo", authMiddleware, upload.single("logo"), updateLogo);  // Usamos el middleware 'upload' para manejar la carga de imágenes
+router.patch('/user/logo', authMiddleware, upload.single('logo'), updateLogo); 
 
 // Ruta para obtener los datos del usuario con token JWT
 router.get("/user", authMiddleware, getUser);
