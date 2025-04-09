@@ -2,7 +2,7 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "email": "alexx@example.com",
+  "email": "alexramirez@example.com",
   "password": "mypassword123"
 }
 
@@ -83,7 +83,7 @@ Content-Type: application/json
 
 ### Subir logo a IPFS (PATCH)
 PATCH http://localhost:3000/api/auth/user/logo HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM0MzYzODMsImV4cCI6MTc0MzQzOTk4M30.myVMZCnOpTq41tAik_kfAlgeJD1V9klt7YVgAqljVgs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWFiYWZkZjU3YTZiZWM3NTkxYmNhNSIsImVtYWlsIjoiYWxleHJhbWlyZXpAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM0MzY1NDEsImV4cCI6MTc0MzQ0MDE0MX0.qAsrnc0w8FZos4pva1SciGDiJCGfiyUgl06fi7mkhgo
 Content-Type: multipart/form-data; boundary=boundary123
 
 --boundary123
@@ -133,6 +133,26 @@ Content-Type: application/json
 {
   "email": "neewuser@example.com"
 }
+
+
+
+
+### Crear Cliente
+POST http://localhost:3000/api/client
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQxOTIzMzksImV4cCI6MTc0NDE5NTkzOX0._HP-DxKOkW2JqKezqdyU5X_QkTxH3x3zmIQweGRAcMs
+Content-Type: application/json
+
+{
+  "name": "Cliente ABC",
+  "email": "cliente@abc.com",
+  "address": {
+    "street": "Calle Ficticia 123",
+    "city": "Madrid",
+    "postalCode": "28001",
+    "province": "Madrid"
+  }
+}
+
 
 
 

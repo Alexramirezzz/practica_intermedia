@@ -1,9 +1,9 @@
 const express = require("express");
-const { register, validateEmail, login, updatePersonalData, updateCompanyData, updateAutonomo, getUser, deleteUser, recoverPassword, inviteColleague } = require("../controllers/authController");
+const { register, validateEmail, login, updatePersonalData, updateCompanyData,  updateAutonomo, getUser, deleteUser, recoverPassword, inviteColleague } = require("../controllers/authController");
 const { updateLogo } = require('../controllers/updatelogo');
 const authMiddleware = require("../middlewares/verificationToken");
 const validateEmailCode = require("../validators/validateEmail");
-const validateLogin = require("../validators/validateLogin");
+const validateLogin = require("../validators/validateLogin"); 
 const validatePersonalData = require("../validators/validatePersonalData");
 const validateCompanyData = require("../validators/validateCompanyData");
 const upload = require("../middlewares/upload");
@@ -35,6 +35,10 @@ const router = express.Router();
  *         description: El email ya está registrado
  */
 router.post("/user/register", register);
+
+router.post("/register", register);
+
+router.put("/user/validation",authMiddleware, validateEmailCode, validateEmail);
 
 /**
  * @swagger
@@ -83,6 +87,9 @@ router.post("/user/login", validateLogin, login);
  *         description: El código es incorrecto o ha expirado
  */
 router.put("/user/validation", authMiddleware, validateEmailCode, validateEmail);
+
+
+router.post("/login", validateLogin, login);
 
 /**
  * @swagger
@@ -146,26 +153,23 @@ router.put("/user", authMiddleware, validatePersonalData, updatePersonalData);
  */
 router.patch("/user/company", authMiddleware, validateCompanyData, updateCompanyData);
 
+
+router.put("/user/register", authMiddleware, validatePersonalData, updatePersonalData);
+
+// Ruta para actualizar los datos de la compañía del usuario
+router.patch("/user/company", authMiddleware, validateCompanyData, updateCompanyData);
+
 /**
  * @swagger
  * /api/user/autonomo:
  *   patch:
  *     summary: Actualizar si el usuario es autónomo
- *     description: Permite actualizar el estado del usuario como autónomo o no.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               isAutonomo:
- *                 type: boolean
+ *     description: Permite al usuario actualizar su estado de autónomo.
  *     responses:
  *       200:
- *         description: Estado autónomo actualizado correctamente
+ *         description: Estado de autónomo actualizado correctamente
  *       400:
- *         description: Error al actualizar el estado autónomo
+ *         description: Error al actualizar el estado
  */
 router.patch("/user/autonomo", authMiddleware, updateAutonomo);
 
@@ -174,7 +178,7 @@ router.patch("/user/autonomo", authMiddleware, updateAutonomo);
  * /api/user/logo:
  *   patch:
  *     summary: Actualizar el logo del usuario
- *     description: Permite al usuario subir un nuevo logo y actualizar su URL.
+ *     description: Permite al usuario actualizar su logo.
  *     requestBody:
  *       required: true
  *       content:
@@ -187,32 +191,33 @@ router.patch("/user/autonomo", authMiddleware, updateAutonomo);
  *                 format: binary
  *     responses:
  *       200:
- *         description: Logo actualizado exitosamente
+ *         description: Logo actualizado correctamente
  *       400:
- *         description: Error al subir el logo
+ *         description: Error al actualizar el logo
  */
-router.patch('/user/logo', authMiddleware, upload.single('logo'), updateLogo);
+router.patch('/user/logo', authMiddleware, upload.single('logo'), updateLogo); 
 
 /**
  * @swagger
  * /api/user:
  *   get:
  *     summary: Obtener los datos del usuario
- *     description: Obtiene los datos del usuario autenticado utilizando el token JWT.
+ *     description: Obtiene los datos del usuario autenticado.
  *     responses:
  *       200:
- *         description: Datos del usuario obtenidos exitosamente
+ *         description: Datos del usuario obtenidos correctamente
  *       401:
- *         description: Token no válido o no proporcionado
+ *         description: No autorizado
  */
 router.get("/user", authMiddleware, getUser);
+
 
 /**
  * @swagger
  * /api/user:
  *   delete:
- *     summary: Eliminar un usuario
- *     description: Elimina físicamente al usuario autenticado.
+ *     summary: Eliminar el usuario
+ *     description: Permite eliminar al usuario de forma física.
  *     responses:
  *       200:
  *         description: Usuario eliminado correctamente
@@ -221,51 +226,34 @@ router.get("/user", authMiddleware, getUser);
  */
 router.delete("/user", authMiddleware, deleteUser);
 
+
 /**
  * @swagger
  * /api/user/recover:
  *   post:
  *     summary: Recuperar la contraseña
- *     description: Envía un enlace para recuperar la contraseña al email del usuario.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
+ *     description: Permite recuperar la contraseña del usuario.
  *     responses:
  *       200:
- *         description: Enlace de recuperación enviado
+ *         description: Correo de recuperación enviado
  *       400:
- *         description: Error al enviar el enlace de recuperación
+ *         description: Error al enviar el correo de recuperación
  */
 router.post("/user/recover", recoverPassword);
+
 
 /**
  * @swagger
  * /api/user/invite:
  *   post:
  *     summary: Invitar a un compañero
- *     description: Invita a otro usuario como parte de tu compañía.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
+ *     description: Permite al usuario invitar a otro usuario a formar parte de su compañía.
  *     responses:
  *       200:
- *         description: Compañero invitado exitosamente
+ *         description: Invitación enviada correctamente
  *       400:
- *         description: Error al invitar al compañero
+ *         description: Error al enviar la invitación
  */
 router.post("/user/invite", authMiddleware, inviteColleague);
 
 module.exports = router;
-
