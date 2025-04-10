@@ -1,5 +1,5 @@
 const express = require("express");
-const { createClient, updateClient, getAllClients, getClientById, archiveClient, deleteClient } = require("../controllers/clientController");
+const { createClient, updateClient, getAllClients, getClientById, archiveClient, deleteClient,  restoreClient } = require("../controllers/clientController");
 
 const authMiddleware = require("../middlewares/verificationToken");
 
@@ -22,6 +22,10 @@ router.patch("/client/:id/archive", authMiddleware, archiveClient);
 
 // Eliminar un cliente (hard delete)
 router.delete("/client/:id", authMiddleware, deleteClient);
+
+// Ruta para recuperar un cliente archivado (soft delete)
+router.patch("/client/:id/recover", authMiddleware, restoreClient);
+
 
 
 

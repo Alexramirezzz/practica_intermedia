@@ -1,6 +1,6 @@
 const Client = require("../models/Clients");
 const User = require("../models/User"); // Para comprobar al usuario
-
+const mongoose = require('mongoose');
 // Crear un nuevo cliente
 exports.createClient = async (req, res) => {
   try {
@@ -33,6 +33,12 @@ exports.createClient = async (req, res) => {
 exports.updateClient = async (req, res) => {
   try {
     const clientId = req.params.id;
+
+    // Verificar si el ID del cliente es válido
+    if (!mongoose.Types.ObjectId.isValid(clientId)) {
+      return res.status(400).json({ message: "ID de cliente no válido" });
+    }
+
     const { name, email, address } = req.body;
     const userId = req.user.id;
 
@@ -113,12 +119,15 @@ exports.deleteClient = async (req, res) => {
     const clientId = req.params.id;
     const userId = req.user.id;
 
+    // Verificar si el cliente pertenece al usuario
     const client = await Client.findOne({ _id: clientId, createdBy: userId });
     if (!client) {
       return res.status(404).json({ message: "Cliente no encontrado o no autorizado" });
     }
 
-    await client.remove();
+    // Eliminar cliente (hard delete)
+    await Client.findByIdAndDelete(clientId); // Usamos findByIdAndDelete en vez de remove
+
     return res.status(200).json({ message: "Cliente eliminado correctamente" });
   } catch (error) {
     console.error("Error al eliminar el cliente:", error);

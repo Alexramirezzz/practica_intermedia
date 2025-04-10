@@ -154,6 +154,24 @@ Content-Type: application/json
 }
 
 
+### Actualizar Cliente
+PUT http://localhost:3000/api/client/{id}
+Authorization: Bearer <tu_token_jwt_aqui>
+Content-Type: application/json
+
+{
+  "name": "Cliente XYZ",
+  "email": "cliente@xyz.com",
+  "address": {
+    "street": "Avenida Real 456",
+    "city": "Barcelona",
+    "postalCode": "08001",
+    "province": "Barcelona"
+  }
+}
+
+
+
 
 
 
