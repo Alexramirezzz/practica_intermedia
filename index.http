@@ -139,40 +139,62 @@ Content-Type: application/json
 
 ### Crear Cliente
 POST http://localhost:3000/api/client
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQxOTIzMzksImV4cCI6MTc0NDE5NTkzOX0._HP-DxKOkW2JqKezqdyU5X_QkTxH3x3zmIQweGRAcMs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
 Content-Type: application/json
 
 {
-  "name": "Cliente ABC",
-  "email": "cliente@abc.com",
+  "name": "alex",
+  "email": "alex@gmail.com",
   "address": {
-    "street": "Calle Ficticia 123",
+    "street": "culo",
     "city": "Madrid",
-    "postalCode": "28001",
+    "postalCode": "08001",
+    "province": "Madrid"
+  }
+}
+
+### Actualizar Cliente
+PUT http://localhost:3000/api/client/67f64494ac0f458fdd2af649
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
+Content-Type: application/json
+
+{
+  "name": "alex",
+  "email": "alex@gmail.com",
+  "address": {
+    "street": "culo",
+    "city": "Madrid",
+    "postalCode": "08001",
     "province": "Madrid"
   }
 }
 
 
-### Actualizar Cliente
-PUT http://localhost:3000/api/client/{id}
-Authorization: Bearer <tu_token_jwt_aqui>
-Content-Type: application/json
-
-{
-  "name": "Cliente XYZ",
-  "email": "cliente@xyz.com",
-  "address": {
-    "street": "Avenida Real 456",
-    "city": "Barcelona",
-    "postalCode": "08001",
-    "province": "Barcelona"
-  }
-}
+### Obtener todos los clientes del usuario
+GET http://localhost:3000/api/client
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
 
 
 
 
+### Obtener un cliente específico por ID
+GET http://localhost:3000/api/client/67f64494ac0f458fdd2af649
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
 
 
 
+### Archivar un cliente (soft delete)
+PATCH http://localhost:3000/api/client/67f7900f5afa68c344fd8ad4/archive
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
+
+
+
+### Borrar un cliente (hard delete)
+DELETE http://localhost:3000/api/client/67f64494ac0f458fdd2af649
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
+
+
+
+### Recuperar un cliente archivado
+PATCH http://localhost:3000/api/client/67f7900f5afa68c344fd8ad4/recover
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
