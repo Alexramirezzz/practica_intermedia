@@ -108,46 +108,39 @@ exports.validateEmail = async (req, res) => {
   }
 };
 
-// Función de login de usuario
 exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email y contraseña son requeridos" });
+  }
+
   try {
-    const { email, password } = req.body;
-
-    // Verificar si el email y la contraseña fueron proporcionados
-    if (!email || !password) {
-      return res.status(400).json({ message: "Campos requeridos" });
-    }
-
-    // Buscar al usuario por email
+    // Buscar el usuario por el email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Verificar la contraseña
+    // Comparar la contraseña proporcionada con la contraseña almacenada en la base de datos
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Credenciales incorrectas" });
     }
 
-    // Si las credenciales son correctas, generar el token
-    const token = generateToken(user);
+    // Generar el token JWT si las credenciales son correctas
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    // Responder con el token y los datos del usuario
     return res.status(200).json({
+      message: "Login exitoso",
       token,
-      user: {
-        email: user.email,
-        role: user.role,
-        _id: user._id,
-      },
+      user: { email: user.email, role: user.role, _id: user._id }
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error al hacer login:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
-
 // Función para actualizar los datos personales del usuario
 exports.updatePersonalData = async (req, res) => {
   try {

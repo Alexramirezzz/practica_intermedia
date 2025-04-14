@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const clientRoutes = require("./routes/clientRoutes");
+const projectRoutes = require("./routes/projectRoutes");
 const swaggerUi = require("swagger-ui-express")
 const swaggerSpecs = require("./docs/swagger")
 
@@ -24,6 +25,11 @@ app.use("/api/auth", authRoutes);  // Rutas de autenticación
 
 // Rutas de clientes
 app.use("/api", clientRoutes);
+
+// Rutas de proyectos
+app.use("/api", projectRoutes);
+
+
 
 
 const PORT = process.env.PORT || 3000;
