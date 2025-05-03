@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const clientRoutes = require("./routes/clientRoutes");
 const projectRoutes = require("./routes/projectRoutes");
+const deliveryNoteRoutes = require("./routes/deliveryNoteRoutes");
 const swaggerUi = require("swagger-ui-express")
 const swaggerSpecs = require("./docs/swagger")
 
@@ -29,10 +30,13 @@ app.use("/api", clientRoutes);
 // Rutas de proyectos
 app.use("/api", projectRoutes);
 
-
+// Rutas de albaranes
+app.use("/api", deliveryNoteRoutes);
 
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+module.exports =  app ;
