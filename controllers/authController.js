@@ -12,51 +12,45 @@ const generateToken = (user) => {
   });
 };
 
-// Función de registro de usuario
 exports.register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, name, surnames, nif } = req.body;
 
     // Validaciones
-    if (!email || !password) {
-      return res.status(400).json({ message: "Campos requeridos" });
+    if (!email || !password || !name || !surnames || !nif) {
+      return res.status(400).json({ message: "Todos los campos son requeridos" });
     }
 
-    // Validar que el email tenga el formato adecuado
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Email inválido" });
     }
 
-    // Validar la longitud de la contraseña
     if (password.length < 8) {
       return res.status(400).json({ message: "Contraseña demasiado corta" });
     }
 
-    // Comprobar si el email ya está registrado
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "El email ya está registrado" });
     }
 
-    // Generar un código de verificación aleatorio
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Cifrar la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear nuevo usuario
     const newUser = new User({
       email,
-      password: hashedPassword,
+      password,
+      name,
+      surnames,
+      nif,
       verificationCode,
-      verificationAttempts: process.env.EMAIL_VERIFICATION_ATTEMPTS || 3, // Intentos máximos de verificación
-      role: "user",  // Rol por defecto
+      verificationAttempts: process.env.EMAIL_VERIFICATION_ATTEMPTS || 3,
+      role: "user",
     });
 
     await newUser.save();
 
-    // Responder con el token JWT y los datos del usuario
     return res.status(201).json({
       token: generateToken(newUser),
       user: {
@@ -71,6 +65,7 @@ exports.register = async (req, res) => {
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
 
 // Función para validar el email
 exports.validateEmail = async (req, res) => {
@@ -122,25 +117,43 @@ exports.login = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Comparar la contraseña proporcionada con la contraseña almacenada en la base de datos
+    // (Opcional) Solo exigir verificación si no estás en modo test o desarrollo
+    if (!user.verified && process.env.NODE_ENV === "production") {
+      return res.status(403).json({ message: "Cuenta no verificada" });
+    }
+
+    // Comparar la contraseña proporcionada
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log('Contraseña incorrecta para el usuario:', email);
       return res.status(401).json({ message: "Credenciales incorrectas" });
     }
 
-    // Generar el token JWT si las credenciales son correctas
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    // Generar token
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    console.log("Login exitoso para el usuario:", email);
 
     return res.status(200).json({
       message: "Login exitoso",
       token,
-      user: { email: user.email, role: user.role, _id: user._id }
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        isAutonomo: user.isAutonomo // si lo usas en el frontend
+      }
     });
   } catch (error) {
     console.error("Error al hacer login:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
 // Función para actualizar los datos personales del usuario
 exports.updatePersonalData = async (req, res) => {
   try {

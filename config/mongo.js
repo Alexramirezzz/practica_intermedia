@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
-const connectDB = () => {
+const dbConnect = () => {
+    //const db_url = process.env.DB_URI
     const db_url = process.env.NODE_ENV === 'test' ? process.env.MONGO_URI_TEST : process.env.MONGO_URI
     mongoose.set('strictQuery', false)
 
@@ -13,5 +14,4 @@ const connectDB = () => {
     mongoose.connection.on("connected",() => console.log("Conectado a la BD"))
 }
 
-
-module.exports = connectDB;
+module.exports = dbConnect

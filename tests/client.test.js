@@ -5,18 +5,18 @@ const mongoose = require('mongoose');
 let token;
 
 beforeAll(async () => {
-  // Conectar a la base de datos de test antes de que empiecen los tests
-  await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    // Conectar a la base de datos de test antes de que empiecen los tests
+    await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  
+    // Login para obtener el token
+    const res = await request(app)
+       .post('/api/auth/login')
+       .send({
+           email: 'testuser@example.com',
+           password: 'mypassword123',
+});
 
-  // Crear un usuario y obtener el token (esto puede variar dependiendo de tu implementación de registro y login)
-  const res = await request(app)
-    .post('/api/auth/login')
-    .send({
-      email: 'testuser@example.com',
-      password: 'mypassword123',
-    });
-
-  token = res.body.token; // Asumimos que el token se encuentra en `res.body.token`
+token = res.body.token; // Asegúrate de que el token esté disponible
 });
 
 afterAll(async () => {
