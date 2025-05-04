@@ -53,6 +53,9 @@ const router = express.Router();
  */
 router.post("/deliverynote", authMiddleware, createDeliveryNoteValidator, createDeliveryNote);
 
+router.get("/deliverynote", authMiddleware, getAllDeliveryNotes);
+
+
 /**
  * @swagger
  * /api/deliverynote/{id}:
