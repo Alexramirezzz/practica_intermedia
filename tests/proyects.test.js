@@ -1,27 +1,50 @@
 const request = require('supertest');
-const app = require('../app'); // Asegúrate de que este sea el archivo donde se configura tu app Express.
+const app = require('../app');
 const mongoose = require('mongoose');
+const User = require('../models/User');
+const Client = require('../models/Clients');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 let token;
+let userId;
+let clientId;
 
 beforeAll(async () => {
-  // Conectar a la base de datos de test antes de que empiecen los tests
-  await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  await mongoose.connect(process.env.MONGO_URI_TEST);
 
-  // Crear un usuario y obtener el token
-  const res = await request(app)
-    .post('/api/auth/login')
-    .send({
-      email: 'testuser@example.com',
-      password: 'mypassword123',
-    });
+  const testEmail = `projectuser${Date.now()}@test.com`;
+  const hashedPassword = await bcrypt.hash('test1234', 10);
 
-  token = res.body.token; // Asumimos que el token se encuentra en `res.body.token`
-  console.log('Token de prueba:', token); // Verificar que el token se ha generado correctamente
+  const user = new User({
+    email: testEmail,
+    password: hashedPassword,
+    verified: true
+  });
+  await user.save();
+  userId = user._id;
+
+  token = jwt.sign({ id: userId, email: testEmail }, process.env.JWT_SECRET, {
+    expiresIn: '1h',
+  });
+
+  const client = await Client.create({
+    name: 'Cliente para Proyecto',
+    email: `client${Date.now()}@test.com`,
+    address: {
+      street: 'Calle Proyecto',
+      city: 'Madrid',
+      postalCode: '28001',
+      province: 'Madrid',
+    },
+    createdBy: userId,
+  });
+
+  clientId = client._id;
 });
 
 afterAll(async () => {
-  // Desconectar de la base de datos después de que se completen los tests
+  await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
 });
 
@@ -33,13 +56,10 @@ describe('API de Proyectos', () => {
       .send({
         name: 'Proyecto de Test',
         description: 'Este es un proyecto de prueba',
-        clientId: 'client_id_example', // Asegúrate de que este clientId sea válido
-        createdBy: 'user_id_example',  // Asegúrate de que este userId sea válido
+        clientId,
       });
 
-    console.log('Respuesta de la creación del proyecto:', response.body); // Verifica la respuesta
-
-    expect(response.status).toBe(201);  // 201 para creación exitosa
+    expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('project');
     expect(response.body.project.name).toBe('Proyecto de Test');
   });
@@ -50,99 +70,90 @@ describe('API de Proyectos', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
-    expect(Array.isArray(response.body.projects)).toBe(true); // Comprobamos que la respuesta sea un array
+    expect(Array.isArray(response.body.projects)).toBe(true);
   });
 
   it('Debería obtener un proyecto por ID', async () => {
-    const createResponse = await request(app)
+    const createRes = await request(app)
       .post('/api/project')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        name: 'Proyecto de Test',
-        description: 'Este es un proyecto de prueba',
-        clientId: 'client_id_example',
-        createdBy: 'user_id_example',
+        name: 'Proyecto para obtener',
+        description: 'Descripción',
+        clientId,
       });
 
-    // Verifica que la respuesta contiene un proyecto y su ID
-    expect(createResponse.body).toHaveProperty('project');
-    const projectId = createResponse.body.project._id;
-    console.log('ID del proyecto creado:', projectId);  // Verificar que el ID es correcto
+    const projectId = createRes.body.project._id;
 
-    const response = await request(app)
+    const res = await request(app)
       .get(`/api/project/${projectId}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body.project).toHaveProperty('name');
-    expect(response.body.project.name).toBe('Proyecto de Test');
+    expect(res.status).toBe(200);
+    expect(res.body.project.name).toBe('Proyecto para obtener');
   });
 
   it('Debería actualizar un proyecto', async () => {
-    const createResponse = await request(app)
+    const createRes = await request(app)
       .post('/api/project')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        name: 'Proyecto de Test',
-        description: 'Este es un proyecto de prueba',
-        clientId: 'client_id_example',
-        createdBy: 'user_id_example',
+        name: 'Proyecto Original',
+        description: 'Descripción original',
+        clientId,
       });
 
-    const projectId = createResponse.body.project._id;
-    console.log('ID del proyecto a actualizar:', projectId);  // Verificar que el ID es correcto
+    const projectId = createRes.body.project._id;
 
-    const response = await request(app)
+    const res = await request(app)
       .put(`/api/project/${projectId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Proyecto Actualizado',
-        description: 'Este es un proyecto actualizado',
+        description: 'Descripción actualizada',
       });
 
-    expect(response.status).toBe(200);
-    expect(response.body.project.name).toBe('Proyecto Actualizado');
+    expect(res.status).toBe(200);
+    expect(res.body.project.name).toBe('Proyecto Actualizado');
   });
 
   it('Debería archivar un proyecto', async () => {
-    const createResponse = await request(app)
+    const createRes = await request(app)
       .post('/api/project')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        name: 'Proyecto de Test',
-        description: 'Este es un proyecto de prueba',
-        clientId: 'client_id_example',
-        createdBy: 'user_id_example',
+        name: 'Proyecto Archivado',
+        description: 'Descripción',
+        clientId,
       });
 
-    const projectId = createResponse.body.project._id;
+    const projectId = createRes.body.project._id;
 
-    const response = await request(app)
+    const res = await request(app)
       .patch(`/api/project/${projectId}/archive`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Proyecto archivado correctamente');
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('Proyecto archivado correctamente');
   });
 
   it('Debería eliminar un proyecto', async () => {
-    const createResponse = await request(app)
+    const createRes = await request(app)
       .post('/api/project')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        name: 'Proyecto de Test',
-        description: 'Este es un proyecto de prueba',
-        clientId: 'client_id_example',
-        createdBy: 'user_id_example',
+        name: 'Proyecto para Eliminar',
+        description: 'Descripción',
+        clientId,
       });
 
-    const projectId = createResponse.body.project._id;
+    const projectId = createRes.body.project._id;
 
-    const response = await request(app)
+    const res = await request(app)
       .delete(`/api/project/${projectId}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Proyecto eliminado correctamente');
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('Proyecto eliminado correctamente');
   });
 });
