@@ -25,6 +25,11 @@ exports.createClient = async (req, res) => {
     return res.status(201).json({ message: "Cliente creado exitosamente", client: newClient });
   } catch (error) {
     console.error("Error al crear cliente:", error);
+  
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: "Datos inválidos", error: error.message });
+    }
+  
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
@@ -80,6 +85,10 @@ exports.getClientById = async (req, res) => {
     const clientId = req.params.id;
     const userId = req.user.id;
 
+    if (!mongoose.Types.ObjectId.isValid(clientId)) {
+      return res.status(400).json({ message: "ID de cliente no válido" });
+    }
+
     const client = await Client.findOne({ _id: clientId, createdBy: userId });
     if (!client) {
       return res.status(404).json({ message: "Cliente no encontrado o no autorizado" });
@@ -91,6 +100,7 @@ exports.getClientById = async (req, res) => {
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
 
 // Archivar un cliente (soft delete)
 exports.archiveClient = async (req, res) => {
