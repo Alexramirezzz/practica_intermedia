@@ -2,7 +2,7 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "email": "alexramirez@example.com",
+  "email": "alexramsfdirez@example.com",
   "password": "mypassword123"
 }
 
@@ -26,8 +26,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "testuser@example.com",
-  "password": "mypassword123"
+  "email": "alexramsfdirez@example.com",
+  "password": "$2b$10$5HO/JvS1PrvSc.MrI2dWwetbpQWmvDYrZp1pbWObl4l7tmt2fAP2i"
 }
 
 
@@ -139,12 +139,12 @@ Content-Type: application/json
 
 ### Crear Cliente
 POST http://localhost:3000/api/client
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZmNkM2FmZTg3MjdiMDc1OTRjMzE5YSIsImVtYWlsIjoiYWxleHJhbXNmZGlyZXpAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjI1MTEsImV4cCI6MTc0NDYyNjExMX0.sjdwqWcQf_pq9ngblsXnBJjOb3xsrxUmbzzBZONvoFI
 Content-Type: application/json
 
 {
-  "name": "alex",
-  "email": "alex@gmail.com",
+  "name": "alexasdasdasdas",
+  "email": "aleax@gmail.com",
   "address": {
     "street": "culo",
     "city": "Madrid",
@@ -178,9 +178,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljM
 
 
 ### Obtener un cliente específico por ID
-GET http://localhost:3000/api/client/67f64494ac0f458fdd2af649
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
-
+GET http://localhost:3000/api/client/67f78ef55afa68c344fd8acd
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
 
 
 ### Archivar un cliente (soft delete)
@@ -198,3 +197,103 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljM
 ### Recuperar un cliente archivado
 PATCH http://localhost:3000/api/client/67f7900f5afa68c344fd8ad4/recover
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQyNzYzNzEsImV4cCI6MTc0NDI3OTk3MX0.iDATknHEPcaoxffnxfMUsVEeBU09n8rY3dZkwUgp0W0
+
+
+### Crear Proyecto
+POST http://localhost:3000/api/project
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
+Content-Type: application/json
+
+{
+  "name": "Proyectooo de Alex",
+  "description": "Un proyecto con futuro",
+  "clientId": "67f78ef55afa68c344fd8acd" 
+}
+
+
+### Actualizar Proyecto
+PUT http://localhost:3000/api/project/67fcd16352b98e448cb5ad02
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
+Content-Type: application/json
+
+{
+  "name": "Proyecto actualizado",
+  "description": "Proyecto para la reforma de un edificio"
+}
+
+
+
+### Obtener todos los proyectos
+GET http://localhost:3000/api/project
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
+
+
+
+### Obtener Proyecto por ID
+GET http://localhost:3000/api/project/67fcd16352b98e448cb5ad02  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
+
+
+
+### Archivar Proyecto
+PATCH http://localhost:3000/api/project/67fcd559fc67bf6b74113352/archive  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
+
+
+
+### Eliminar Proyecto
+DELETE http://localhost:3000/api/project/67fcd16352b98e448cb5ad02  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
+
+
+
+
+
+### Recuperar Proyecto Archivado
+PATCH http://localhost:3000/api/project/67fcd559fc67bf6b74113352/recover
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjE0MzQsImV4cCI6MTc0NDYyNTAzNH0.c04Qbw3gWQ4TSQtjr941kE4tq-i1ZZUraX_Fo-PXxq0
+
+
+
+### Crear un Albarán
+POST http://localhost:3000/api/deliverynote
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjU2NjUsImV4cCI6MTc0NDYyOTI2NX0.z3o5VfIi7xt3qFQhjTx-fO7IMdmF1Mv2h7fLmx5fouc
+Content-Type: application/json
+
+{
+  "type": "hours",
+  "content": [
+    {
+      "person": "Alex",
+      "hoursWorked": 5,
+      "description": "Alex es muy bueno"
+    }
+  ],
+  "projectId": "67fcd559fc67bf6b74113352",  
+  "clientId": "67f78ef55afa68c344fd8acd"  
+}
+
+
+### Obtener todos los Albaranes
+GET http://localhost:3000/api/deliverynote
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjU2NjUsImV4cCI6MTc0NDYyOTI2NX0.z3o5VfIi7xt3qFQhjTx-fO7IMdmF1Mv2h7fLmx5fouc
+
+### Obtener un Albarán por ID
+GET http://localhost:3000/api/deliverynote/67fcdb97fd0ec1783e823437 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjU2NjUsImV4cCI6MTc0NDYyOTI2NX0.z3o5VfIi7xt3qFQhjTx-fO7IMdmF1Mv2h7fLmx5fouc
+
+### Crear y Descargar el PDF del Albarán
+GET http://localhost:3000/api/deliverynote/pdf/67fcdb97fd0ec1783e823437
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjU2NjUsImV4cCI6MTc0NDYyOTI2NX0.z3o5VfIi7xt3qFQhjTx-fO7IMdmF1Mv2h7fLmx5fouc
+
+### Firmar un Albarán (subir la firma)
+PATCH http://localhost:3000/api/deliverynote/67fcdb97fd0ec1783e823437/sign  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjU2NjUsImV4cCI6MTc0NDYyOTI2NX0.z3o5VfIi7xt3qFQhjTx-fO7IMdmF1Mv2h7fLmx5fouc
+Content-Type: multipart/form-data
+
+--form-data; filename="firma.png"
+file=@"/ruta/a/tu/firma.png"
+
+### Eliminar un Albarán
+DELETE http://localhost:3000/api/deliverynote/60d2bafbd220f01320c1bcd2  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNlMjljMzNiYTI3YWM3ODJkOTgzOCIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDQ2MjU2NjUsImV4cCI6MTc0NDYyOTI2NX0.z3o5VfIi7xt3qFQhjTx-fO7IMdmF1Mv2h7fLmx5fouc
