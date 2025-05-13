@@ -104,55 +104,35 @@ exports.validateEmail = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email y contraseña son requeridos" });
-  }
-
   try {
-    // Buscar el usuario por el email
+    const { email, password } = req.body;
+
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(400).json({ message: 'Credenciales incorrectas' });
     }
 
-    // (Opcional) Solo exigir verificación si no estás en modo test o desarrollo
-    if (!user.verified && process.env.NODE_ENV === "production") {
-      return res.status(403).json({ message: "Cuenta no verificada" });
+    const isPasswordValid = await bcrypt.compare(password, user.password); // ← CORRECTO
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: 'Credenciales incorrectas' });
     }
 
-    // Comparar la contraseña proporcionada
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      console.log('Contraseña incorrecta para el usuario:', email);
-      return res.status(401).json({ message: "Credenciales incorrectas" });
-    }
-
-    // Generar token
-    const token = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    console.log("Login exitoso para el usuario:", email);
-
-    return res.status(200).json({
-      message: "Login exitoso",
+    const token = generateToken(user);
+    res.status(200).json({
       token,
       user: {
-        _id: user._id,
         email: user.email,
+        status: user.status,
         role: user.role,
-        isAutonomo: user.isAutonomo // si lo usas en el frontend
+        _id: user._id
       }
     });
   } catch (error) {
-    console.error("Error al hacer login:", error);
-    return res.status(500).json({ message: "Error interno del servidor" });
+    console.error(error);
+    res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
 
 // Función para actualizar los datos personales del usuario
 exports.updatePersonalData = async (req, res) => {

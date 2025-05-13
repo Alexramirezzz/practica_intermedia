@@ -161,7 +161,7 @@ exports.deleteDeliveryNote = async (req, res) => {
       return res.status(400).json({ message: "No se puede eliminar un albarán firmado" });
     }
 
-    await DeliveryNote.findByIdAndDelete(id); // <--- corrección aquí
+    await DeliveryNote.findByIdAndDelete(id); 
     return res.status(200).json({ message: "Albarán eliminado correctamente" });
   } catch (error) {
     console.error("Error al eliminar albarán:", error);
